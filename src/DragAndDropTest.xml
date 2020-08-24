@@ -15,6 +15,20 @@
         <caption>Content</caption>
         <description></description>
       </property>
+      <property key="parent" type="attribute" required="false" dataSource="datasource">
+        <caption>Parent Key</caption>
+        <description></description>
+        <attributeTypes>
+          <attributeType name="String" />
+        </attributeTypes>
+      </property>
+      <property key="childkey" type="attribute" required="false" dataSource="datasource">
+        <caption>Key</caption>
+        <description></description>
+        <attributeTypes>
+          <attributeType name="String" />
+        </attributeTypes>
+      </property>
     </propertyGroup>
     <propertyGroup caption="Behavior">
       <property key="onDragStart" type="action" dataSource="datasource">
