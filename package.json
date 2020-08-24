@@ -1,0 +1,33 @@
+{
+    "name": "drag-drop-test",
+    "widgetName": "DragAndDropTest",
+    "version": "1.0.0",
+    "description": "My widget description",
+    "copyright": "Mendix 2019",
+    "author": "Conner Charlebois",
+    "config": {
+        "widgetPath": "/Users/conner/mendix/p/DragNDropOrgChart/widgets",
+        "projectPath": "/Users/conner/mendix/p/DragNDropOrgChart",
+        "mendixHost": "http://localhost:8080",
+        "developmentPort": "3000"
+    },
+    "packagePath": "mendix",
+    "scripts": {
+        "start": "concurrently \"pluggable-widgets-tools start:server --open\" \"npm:dev\"",
+        "dev": "pluggable-widgets-tools start:js",
+        "build": "pluggable-widgets-tools build:js",
+        "lint": "pluggable-widgets-tools lint",
+        "lint:fix": "pluggable-widgets-tools lint:fix",
+        "prerelease": "npm run lint",
+        "release": "pluggable-widgets-tools release:js"
+    },
+    "license": "Apache-2.0",
+    "devDependencies": {
+        "@mendix/pluggable-widgets-tools": "^8.9.2"
+    },
+    "dependencies": {
+        "classnames": "^2.2.6",
+        "react-drag-and-drop": "^3.0.0",
+        "react-draggable": "^4.4.3"
+    }
+}
