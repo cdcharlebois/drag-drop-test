@@ -6,8 +6,8 @@
     "copyright": "Mendix 2019",
     "author": "Conner Charlebois",
     "config": {
-        "widgetPath": "/Users/conner/mendix/p/DragNDropOrgChart/widgets",
-        "projectPath": "/Users/conner/mendix/p/DragNDropOrgChart",
+        "widgetPath": "/Users/conner/mendix/p/Test-OrgChart-main/widgets",
+        "projectPath": "/Users/conner/mendix/p/Test-OrgChart-main",
         "mendixHost": "http://localhost:8080",
         "developmentPort": "3000"
     },

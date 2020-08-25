@@ -1,53 +1,21 @@
 import { Component, createElement } from "react";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { hot } from "react-hot-loader/root";
-import { Tree, TreeNode } from "react-organizational-chart";
 
-import { HelloWorldSample } from "./components/HelloWorldSample";
 import "./ui/DragAndDropTest.css";
-
-const DraggableItem = props => {
-    const [, drag] = useDrag({
-        item: { type: "node" },
-        begin: props.onDrag.execute
-    });
-    const [, drop] = useDrop({
-        accept: "node",
-        drop: props.onDrop.execute
-    });
-    return (
-        <div ref={drag}>
-            <div ref={drop}>{props.children}</div>
-        </div>
-    );
-};
+import { OrgChart } from "./components/OrgChart";
 
 const DragAndDropTest = props => {
-    const _renderItem = item => {
-        return item.children ? (
-            <TreeNode
-                label={
-                    <DraggableItem onDrop={props.onDragEnd(item)} onDrag={props.onDragStart(item)}>
-                        {props.content(item)}
-                    </DraggableItem>
-                }
-            >
-                {_renderChildrenTreeNodes(item.children)}
-            </TreeNode>
-        ) : (
-            <TreeNode
-                label={
-                    <DraggableItem onDrop={props.onDragEnd(item)} onDrag={props.onDragStart(item)}>
-                        {props.content(item)}
-                    </DraggableItem>
-                }
-            />
-        );
-    };
-    const _renderChildrenTreeNodes = children => {
-        return children.map(item => _renderItem(item));
-    };
+    const { onDragEnd, onDragStart, content } = props;
+    const { parent, childkey: key } = props;
+    const { datasource: ds } = props;
+    /**
+     * removes any found items from the universe so they are not checked again.
+     * @param {[ds item]} targets - the ds items that we want to remove from the unviverse
+     * @param {[ds item]} universe - the current universe
+     *
+     */
     const _removeFromUniverse = (targets, universe) => {
         return universe.filter(u => {
             return !targets.find(t => {
@@ -55,39 +23,47 @@ const DragAndDropTest = props => {
             });
         });
     };
-    const _recursivelyBuildTree = (currentLevelArray, universe, parent, childkey) => {
+    /**
+     * for each item in `currentLevelArray`, find and attach children from `universe`, recursively
+     * @param {[ds item]} currentLevelArray - set of siblings
+     * @param {[ds item]} universe - unattached set of ds items
+     */
+    const _recursivelyBuildTree = (currentLevelArray, universe) => {
         // find all the children of this parent
         currentLevelArray.forEach(item => {
             item.children = universe.filter(child => {
-                return parent(child).value === childkey(item).value;
+                return parent(child).value === key(item).value;
                 // ... remove from universe
             });
             if (item.children) {
                 universe = _removeFromUniverse(item.children, universe);
                 if (universe.length > 0) {
-                    _recursivelyBuildTree(item.children, universe, parent, childkey);
+                    _recursivelyBuildTree(item.children, universe);
                 }
             }
         });
     };
-    const _renderTreeNodes = () => {
-        const { datasource: ds, parent, childkey } = props;
-        if (ds.status !== "available") return null;
-        let universe = ds.items;
+    /**
+     * Identify the top level nodes (those without parents), and begin building the tree
+     * @param {mx:datasource} data - the datasource from mendix
+     * @returns {[tree structure]} - the converted tree structure ([{id: 1, children:[{id: 2}, {id: 3}]}])
+     */
+    const _getDataMap = data => {
+        if (!data) return null;
+        let universe = data;
         // get the top level nodes
-        let ret = ds.items.filter(item => {
+        let ret = data.filter(item => {
             return parent(item).value === undefined;
         });
         // remove first level...
         universe = _removeFromUniverse(ret, universe);
         // for each top level node, recursively build the tree
-        _recursivelyBuildTree(ret, universe, parent, childkey);
-        // [{id: 1, children:[{id: 2}, {id: 3}]}]
-        return ret.map(item => _renderItem(item));
+        _recursivelyBuildTree(ret, universe);
+        return ret;
     };
     return (
         <DndProvider backend={HTML5Backend}>
-            <Tree label={null}>{_renderTreeNodes()}</Tree>
+            <OrgChart data={_getDataMap(ds.items)} onDrop={onDragEnd} onDrag={onDragStart} node={content} />
         </DndProvider>
     );
 };
