@@ -7,7 +7,7 @@ import "./ui/DragAndDropTest.css";
 import { OrgChart } from "./components/OrgChart";
 
 const DragAndDropTest = props => {
-    const { onDragEnd, onDragStart, content, parent, childkey: key, datasource: ds } = props;
+    const { onDragEnd, onDragStart, content, parent, childkey: key, datasource: ds, rootkey } = props;
     const [openNodes, setOpenNodes] = useState([]);
     /**
      * toggles an item open/closed (so that its children are shown or hidden)
@@ -68,11 +68,20 @@ const DragAndDropTest = props => {
      */
     const _getDataMap = data => {
         if (!data) return null;
-        let universe = data;
+        let universe = data,
+            ret = [];
         // get the top level nodes
-        let ret = data.filter(item => {
-            return parent(item).value === undefined;
-        });
+        if (rootkey && rootkey.status === "available") {
+            const foundRoot = data.find(item => {
+                return key(item).value === rootkey.value;
+            });
+            ret = foundRoot ? [foundRoot] : [];
+        } else {
+            ret = data.filter(item => {
+                return parent(item).value === undefined;
+            });
+        }
+
         // remove first level...
         universe = _removeFromUniverse(ret, universe);
         // for each top level node, recursively build the tree
