@@ -71,16 +71,25 @@ const DragAndDropTest = props => {
         let universe = data,
             ret = [];
         // get the top level nodes
-        if (rootkey && rootkey.status === "available") {
-            const foundRoot = data.find(item => {
-                return key(item).value === rootkey.value;
-            });
-            ret = foundRoot ? [foundRoot] : [];
-        } else {
+        // if (rootkey && rootkey.status === "available") {
+        //     const foundRoot = data.find(item => {
+        //         return key(item).value === rootkey.value;
+        //     });
+        //     ret = foundRoot ? [foundRoot] : [];
+        // } else {
+        // items without a parent
+        ret = data.filter(item => {
+            return parent(item).value === undefined;
+        });
+        if (ret.length === 0) {
+            // items whose parent is not in data
             ret = data.filter(item => {
-                return parent(item).value === undefined;
+                return !data.find(d => {
+                    return key(d).value === parent(item).value;
+                });
             });
         }
+        // }
 
         // remove first level...
         universe = _removeFromUniverse(ret, universe);

@@ -29,15 +29,6 @@
           <attributeType name="String" />
         </attributeTypes>
       </property>
-      <property key="rootkey" type="attribute" required="false">
-        <caption>Root object key</caption>
-        <description></description>
-        <attributeTypes>
-          <attributeType name="String" />
-          <attributeType name="Integer" />
-          <attributeType name="Long" />
-        </attributeTypes>
-      </property>
     </propertyGroup>
     <propertyGroup caption="Behavior">
       <property key="onDragStart" type="action" dataSource="datasource">
