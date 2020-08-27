@@ -7,7 +7,7 @@ import "./ui/DragAndDropTest.css";
 import { OrgChart } from "./components/OrgChart";
 
 const DragAndDropTest = props => {
-    const { onDragEnd, onDragStart, content, parent, childkey: key, datasource: ds, rootkey } = props;
+    const { onDragEnd, onDragStart, content, parent, childkey: key, datasource: ds } = props;
     const [openNodes, setOpenNodes] = useState([]);
     /**
      * toggles an item open/closed (so that its children are shown or hidden)
@@ -71,12 +71,6 @@ const DragAndDropTest = props => {
         let universe = data,
             ret = [];
         // get the top level nodes
-        // if (rootkey && rootkey.status === "available") {
-        //     const foundRoot = data.find(item => {
-        //         return key(item).value === rootkey.value;
-        //     });
-        //     ret = foundRoot ? [foundRoot] : [];
-        // } else {
         // items without a parent
         ret = data.filter(item => {
             return parent(item).value === undefined;
@@ -89,7 +83,6 @@ const DragAndDropTest = props => {
                 });
             });
         }
-        // }
 
         // remove first level...
         universe = _removeFromUniverse(ret, universe);
